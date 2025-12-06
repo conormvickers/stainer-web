@@ -1,3 +1,6 @@
+#include <SimpleWebSerial.h>
+SimpleWebSerial WebSerial;
+
 
 const int xdirection = 7;
 const int xstep = 4;
@@ -33,14 +36,47 @@ void setup() {
 
 
   counter = 0;
-  Serial.begin(115200);
+  // Serial.begin(115200);
 
+
+  Serial.begin(57600);
+  
+  // Define events to listen to and their callback
+  WebSerial.on("event-to-arduino", eventCallback); 
+  
+  // Send named events to browser with a number, string, array or json object
+  WebSerial.send("event-from-arduino",  "Hello!");
 
 
 
   Serial.println("Good to go!");
 
 }
+
+void eventCallback(JSONVar data) {
+ 
+  String copy = data;
+  
+
+  if (copy == "x") {
+    jumpx();
+  } else if (copy == "n") {
+    nextbin();
+  } else if (copy == "h") {
+    homex();
+  } else if (copy == "y") {
+    jumpy();
+  } else if (copy == "j") {
+    homey();
+  } else if (copy == "s") {
+    sequence();
+  } else {
+    
+  }
+  WebSerial.send("event-from-arduino", "Finished command " + copy);
+};
+
+
 void test() {
  
   digitalWrite(ydirection, LOW);
@@ -58,6 +94,9 @@ void test() {
 }
 
 void jumpy (){
+  
+  WebSerial.send("event-from-arduino", "starting");
+
   counter = 0;
   digitalWrite(ydirection, HIGH);
 
@@ -70,9 +109,13 @@ void jumpy (){
     counter = counter + 1;
   }
 
+  WebSerial.send("event-from-arduino", "done");
+
 }
 
 void homey () {
+  WebSerial.send("event-from-arduino", "starting");
+
   counter = 0;
   digitalWrite(ydirection, LOW);
 
@@ -84,10 +127,14 @@ void homey () {
     Serial.println(counter);
     counter = counter + 1;
   }
+  WebSerial.send("event-from-arduino", "done");
+
 
 }
 
 void jumpx (){
+  WebSerial.send("event-from-arduino", "starting");
+
   counter = 0;
   digitalWrite(xdirection, HIGH);
 
@@ -101,9 +148,14 @@ void jumpx (){
     counter = counter + 1;
     totalcounter = totalcounter + 1;
   }
+
+  WebSerial.send("event-from-arduino", "done");
+
 }
 
 void homex() {
+  WebSerial.send("event-from-arduino", "starting");
+
  
   counter = 0;
   digitalWrite(xdirection, LOW);
@@ -117,10 +169,14 @@ void homex() {
 
   }
   totalcounter = 0;
+
+  WebSerial.send("event-from-arduino", "done");
+
 }
 
 
 void nextbin()  {
+  WebSerial.send("event-from-arduino", "starting");
 
   counter = 0;
   digitalWrite(xdirection, HIGH);
@@ -148,6 +204,9 @@ void nextbin()  {
     counter = counter + 1;
     totalcounter = totalcounter + 1;
   }
+
+  WebSerial.send("event-from-arduino", "done");
+
 }
 
 
@@ -161,13 +220,19 @@ void sequence() {
 }
 
 void loop() {
-if (digitalRead(xstopneg)){
-  Serial.println("x");
-}else if (digitalRead(ystopneg)){
-  Serial.println("y");
-}else if (digitalRead(container)){
-  Serial.println("container");
-}
+
+  WebSerial.check();
+  delay(5);
+
+  
+
+// if (digitalRead(xstopneg)){
+//   Serial.println("x");
+// }else if (digitalRead(ystopneg)){
+//   Serial.println("y");
+// }else if (digitalRead(container)){
+//   Serial.println("container");
+// }
 
   //  if (Serial.available() > 0) {
   //   char command = Serial.read(); // Read the incoming character

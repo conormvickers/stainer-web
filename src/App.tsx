@@ -2,51 +2,39 @@ import { useEffect, useState } from "react";
 import reactLogo from "./assets/react.svg";
 import viteLogo from "/vite.svg";
 import "./App.css";
+import { setupSerialConnection } from "simple-web-serial";
 
 const baudRate = 115200;
 function App() {
-  const [serialPort, setSerialPort] = useState<SerialPort | null>(null);
-
+  const [connection, setConnection] = useState<any | null>(null);
   async function connectSerial() {
-    await serialPort.open({ baudRate: baudRate });
+    const connection = setupSerialConnection({
+      requestAccessOnPageLoad: true,
+      requestElement: "serial-request",
+    });
+    setConnection(connection);
+    connection.on("event-from-arduino", function (data) {
+      console.log('Received event "event-from-arduino" with parameter ' + data);
+    });
   }
 
-  async function sendSerial(data: string) {
-    if (serialPort) {
-      const writer = serialPort.writable.getWriter();
-      const dataToSend = new TextEncoder().encode(data);
-      await writer.write(dataToSend);
-      writer.releaseLock();
-    }
-  }
+  async function sendSerial(data: string) {}
   useEffect(() => {
-    if (serialPort) {
-      connectSerial();
-    }
-  }, [serialPort]);
+    connectSerial();
+  }, []);
 
-  async function selectSerialPort() {
-    if (!navigator.serial) {
-      console.error("Serial API is not supported in this browser.");
-      return null;
-    }
-    try {
-      const port = await navigator.serial.requestPort();
-      setSerialPort(port);
-      // User selected a port, now you can open it and communicate
-      console.log("Selected port:", port);
-      return port;
-    } catch (error) {
-      console.error("Error selecting serial port:", error);
-      return null;
-    }
-  }
+  async function selectSerialPort() {}
 
   return (
     <>
-      {serialPort && serialPort.connected ? "Connected" : "Disconnected"}
+      {connection ? "Connected" : "Disconnected"}
+      <div id="serial-request">fes</div>
 
       <button onClick={selectSerialPort}>Select Serial Port</button>
+      <button onClick={() => connection.send("event-to-arduino", "x")}>
+        test
+      </button>
+
       <button onClick={() => sendSerial("x")}>Move X</button>
       <button onClick={() => sendSerial("y")}>Move Y</button>
 
