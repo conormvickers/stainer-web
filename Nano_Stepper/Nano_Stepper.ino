@@ -118,17 +118,20 @@ void eventCallback(JSONVar data) {
 
 void move( int steps, int direction, char axis, int endstoppin) {
   counter = 0;
+  int steppin;
   
   if (axis == 'x') {
     digitalWrite(xdirection, direction);
+    steppin = xstep;
   }else if (axis == 'y') {
     digitalWrite(ydirection, direction);
+    steppin = ystep;
   }
 
   while ( counter < steps && checkEndStop(endstoppin) ){
-    digitalWrite(ystep, HIGH);
+    digitalWrite(steppin, HIGH);
     delay(2);
-    digitalWrite(ystep, LOW);
+    digitalWrite(steppin, LOW);
     delay(2);
     Serial.println(counter);
 
