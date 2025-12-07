@@ -59,16 +59,44 @@ void eventCallback(JSONVar data) {
   String copy = data;
   
   if (copy.startsWith("move")) {
+
+    int steps; 
+    int direction; 
+    char axis; 
+    int endstoppin; 
     
-    int numparts = 5;
-    String parts[numparts];
-    copy.split(",", parts, numparts);
+    char delimiter = ' ';
+    String token;
+
+    int start = 0;
+    int end = copy.indexOf(delimiter);
+    int parseposition = 0;
+
+    while (end >= 0) {
+      token = copy.substring(start, end);
+
+      if (parseposition = 1){
+        steps = token.toInt();
+      }else if (parseposition = 2){
+        direction = token.toInt();
+      }else if (parseposition = 3){
+        axis = token.charAt(0);
+      }else if (parseposition = 4){
+        token.toInt();
+      }
+      // Do something with the token
+      start = end + 1;
+      end = copy.indexOf(delimiter, start);
+      parseposition = parseposition + 1;
+    }
+
+    // Handle the last token if there is one
+    if (start < copy.length()) {
+      token = copy.substring(start, copy.length());
+      // Do something with the last token
+    }
 
 
-    int steps = parts[1].toInt();
-    int direction = parts[2].toInt();
-    char axis = parts[3].charAt(0);
-    int endstoppin = parts[4].toInt();
     move(steps, direction, axis, endstoppin);
   }
   // if (copy == "x") {
@@ -120,7 +148,7 @@ void move( int steps, int direction, char axis, int endstoppin) {
 
 
 }
-void checkEndStop(int pin){
+bool checkEndStop(int pin){
   if (pin == 0){
     return true;
   }else {
@@ -197,7 +225,7 @@ void jumpx (){
     delay(2);
     Serial.println(counter);
     counter = counter + 1;
-    totalcounter = totalcounter + 1;
+    totalcountery = totalcountery + 1;
   }
 
   WebSerial.send("event-from-arduino", "done");
@@ -210,7 +238,7 @@ void homex() {
  
   counter = 0;
   digitalWrite(xdirection, LOW);
-  while ( counter < totalcounter + 200 && !digitalRead(xstopneg)){
+  while ( counter < totalcountery + 200 && !digitalRead(xstopneg)){
     digitalWrite(xstep, HIGH);
     delay(2);
     digitalWrite(xstep, LOW);
@@ -219,7 +247,7 @@ void homex() {
     counter = counter + 1;
 
   }
-  totalcounter = 0;
+  totalcountery = 0;
 
   WebSerial.send("event-from-arduino", "done");
 
@@ -239,7 +267,7 @@ void nextbin()  {
     delay(2);
     Serial.println(counter);
     counter = counter + 1;
-    totalcounter = totalcounter + 1;
+    totalcountery = totalcountery + 1;
   }
  
 
@@ -253,7 +281,7 @@ void nextbin()  {
     delay(2);
     Serial.println(counter);
     counter = counter + 1;
-    totalcounter = totalcounter + 1;
+    totalcountery = totalcountery + 1;
   }
 
   WebSerial.send("event-from-arduino", "done");
