@@ -198,7 +198,7 @@ void homey () {
 void jumpx (){
   WebSerial.send("event-from-arduino", "starting");
 
-  move(400, 1, 'x', 0);
+  move(400, HIGH, 'x', 0);
   // counter = 0;
   // digitalWrite(xdirection, HIGH);
 
@@ -220,19 +220,20 @@ void jumpx (){
 void homex() {
   WebSerial.send("event-from-arduino", "starting");
 
+  move(400, LOW, 'x', 9);
  
-  counter = 0;
-  digitalWrite(xdirection, LOW);
-  while ( counter < totalcountery + 200 && !digitalRead(xstopneg)){
-    digitalWrite(xstep, HIGH);
-    delay(2);
-    digitalWrite(xstep, LOW);
-    delay(2);
-    Serial.println(counter);
-    counter = counter + 1;
+  // counter = 0;
+  // digitalWrite(xdirection, LOW);
+  // while ( counter < totalcountery + 200 && !digitalRead(xstopneg)){
+  //   digitalWrite(xstep, HIGH);
+  //   delay(2);
+  //   digitalWrite(xstep, LOW);
+  //   delay(2);
+  //   Serial.println(counter);
+  //   counter = counter + 1;
 
-  }
-  totalcountery = 0;
+  // }
+  // totalcountery = 0;
 
   WebSerial.send("event-from-arduino", "done");
 
