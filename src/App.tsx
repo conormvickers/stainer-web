@@ -53,7 +53,7 @@ function App() {
         </button>
       </div>
       <div>
-        <button onClick={() => connection.send("event-to-arduino", ",n")}>
+        <button onClick={() => connection.send("event-to-arduino", "n")}>
           Next Bin
         </button>
         <button onClick={() => connection.send("event-to-arduino", "x")}>
