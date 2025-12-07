@@ -58,62 +58,61 @@ void eventCallback(JSONVar data) {
  
   String copy = data;
   
-  if (copy.startsWith("move")) {
+  // if (copy.startsWith("move")) {
 
-    int steps; 
-    int direction; 
-    char axis; 
-    int endstoppin; 
+  //   int steps; 
+  //   int direction; 
+  //   char axis; 
+  //   int endstoppin; 
     
-    char delimiter = ' ';
-    String token;
+  //   char delimiter = ' ';
+  //   String token;
 
-    int start = 0;
-    int end = copy.indexOf(delimiter);
-    int parseposition = 0;
+  //   int start = 0;
+  //   int end = copy.indexOf(delimiter);
+  //   int parseposition = 0;
 
-    while (end >= 0) {
-      token = copy.substring(start, end);
+  //   while (end >= 0) {
+  //     token = copy.substring(start, end);
 
-      if (parseposition = 1){
-        steps = token.toInt();
-      }else if (parseposition = 2){
-        direction = token.toInt();
-      }else if (parseposition = 3){
-        axis = token.charAt(0);
-      }else if (parseposition = 4){
-        token.toInt();
-      }
-      // Do something with the token
-      start = end + 1;
-      end = copy.indexOf(delimiter, start);
-      parseposition = parseposition + 1;
-    }
+  //     if (parseposition = 1){
+  //       steps = token.toInt();
+  //     }else if (parseposition = 2){
+  //       direction = token.toInt();
+  //     }else if (parseposition = 3){
+  //       axis = token.charAt(0);
+  //     }else if (parseposition = 4){
+  //       token.toInt();
+  //     }
+  //     start = end + 1;
+  //     end = copy.indexOf(delimiter, start);
+  //     parseposition = parseposition + 1;
+  //   }
 
-    // Handle the last token if there is one
-    if (start < copy.length()) {
-      token = copy.substring(start, copy.length());
-      // Do something with the last token
-    }
+  //   if (start < copy.length()) {
+  //     token = copy.substring(start, copy.length());
+  //   }
 
 
-    move(steps, direction, axis, endstoppin);
-  }
-  // if (copy == "x") {
-  //   jumpx();
-  // } else if (copy == "n") {
-  //   nextbin();
-  // } else if (copy == "h") {
-  //   homex();
-  // } else if (copy == "y") {
-  //   jumpy();
-  // } else if (copy == "j") {
-  //   homey();
-  // } else if (copy == "s") {
-  //   sequence();
-  // } else {
-    
+  //   move(steps, direction, axis, endstoppin);
   // }
+
+
+  if (copy == "x") {
+    jumpx();
+  } else if (copy == "n") {
+    nextbin();
+  } else if (copy == "h") {
+    homex();
+  } else if (copy == "y") {
+    jumpy();
+  } else if (copy == "j") {
+    homey();
+  } else if (copy == "s") {
+    sequence();
+  } else {
+    
+  }
   WebSerial.send("event-from-arduino", "Finished command " + copy);
 };
 
@@ -156,21 +155,6 @@ bool checkEndStop(int pin){
   }
 }
 
-void test() {
- 
-  digitalWrite(ydirection, LOW);
-  counter = 0;
-  while ( counter < 20 && !digitalRead(xstopneg)){
-    digitalWrite(ystep, HIGH);
-    delay(2);
-    digitalWrite(ystep, LOW);
-    delay(2);
-      Serial.println(counter);
-
-  counter = counter + 1;
-
-  }
-}
 
 void jumpy (){
   
@@ -214,19 +198,20 @@ void homey () {
 void jumpx (){
   WebSerial.send("event-from-arduino", "starting");
 
-  counter = 0;
-  digitalWrite(xdirection, HIGH);
+  move(400, 1, 'x', 0);
+  // counter = 0;
+  // digitalWrite(xdirection, HIGH);
 
-  while ( counter < 400 )
-  {
-    digitalWrite(xstep, HIGH);
-    delay(2);
-    digitalWrite(xstep, LOW);
-    delay(2);
-    Serial.println(counter);
-    counter = counter + 1;
-    totalcountery = totalcountery + 1;
-  }
+  // while ( counter < 400 )
+  // {
+  //   digitalWrite(xstep, HIGH);
+  //   delay(2);
+  //   digitalWrite(xstep, LOW);
+  //   delay(2);
+  //   Serial.println(counter);
+  //   counter = counter + 1;
+  //   totalcountery = totalcountery + 1;
+  // }
 
   WebSerial.send("event-from-arduino", "done");
 
