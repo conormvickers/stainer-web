@@ -58,22 +58,34 @@ void eventCallback(JSONVar data) {
  
   String copy = data;
   
-
-  if (copy == "x") {
-    jumpx();
-  } else if (copy == "n") {
-    nextbin();
-  } else if (copy == "h") {
-    homex();
-  } else if (copy == "y") {
-    jumpy();
-  } else if (copy == "j") {
-    homey();
-  } else if (copy == "s") {
-    sequence();
-  } else {
+  if (copy.startsWith("move")) {
     
+    int numparts = 5;
+    String parts[numparts];
+    copy.split(",", parts, numparts);
+
+
+    int steps = parts[1].toInt();
+    int direction = parts[2].toInt();
+    char axis = parts[3].charAt(0);
+    int endstoppin = parts[4].toInt();
+    move(steps, direction, axis, endstoppin);
   }
+  // if (copy == "x") {
+  //   jumpx();
+  // } else if (copy == "n") {
+  //   nextbin();
+  // } else if (copy == "h") {
+  //   homex();
+  // } else if (copy == "y") {
+  //   jumpy();
+  // } else if (copy == "j") {
+  //   homey();
+  // } else if (copy == "s") {
+  //   sequence();
+  // } else {
+    
+  // }
   WebSerial.send("event-from-arduino", "Finished command " + copy);
 };
 
