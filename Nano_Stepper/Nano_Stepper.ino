@@ -143,7 +143,7 @@ void move( int steps, int direction, char axis, int endstoppin) {
     }
 
     if (counter % 100 == 0){
-      WebSerial.send("event-from-arduino", String(totalcounterx) + " " + String(totalcountery));
+      WebSerial.send("event-from-arduino", "moving " + String(totalcounterx) + " " + String(totalcountery));
     }
   }
 
@@ -165,7 +165,7 @@ void jumpy (){
 
   move(400, HIGH, 'y', 0);
 
-  WebSerial.send("event-from-arduino", "done");
+  WebSerial.send("event-from-arduino", "done " + String(totalcounterx) + " " + String(totalcountery));
 
 }
 
@@ -173,7 +173,8 @@ void homey () {
   WebSerial.send("event-from-arduino", "starting");
 
   move(800, LOW, 'y', ystopneg);
-  WebSerial.send("event-from-arduino", "done");
+  totalcountery = 0;
+  WebSerial.send("event-from-arduino", "done " + String(totalcounterx) + " " + String(totalcountery));
 
 
 }
@@ -184,7 +185,7 @@ void jumpx (){
   move(400, HIGH, 'x', 0);
   
 
-  WebSerial.send("event-from-arduino", "done");
+  WebSerial.send("event-from-arduino", "done " + String(totalcounterx) + " " + String(totalcountery));
 
 }
 
@@ -193,8 +194,8 @@ void homex() {
 
   move(totalcounterx + 200, LOW, 'x', xstopneg);
  
-
-  WebSerial.send("event-from-arduino", "done");
+totalcounterx = 0;
+  WebSerial.send("event-from-arduino", "done " + String(totalcounterx) + " " + String(totalcountery));
 
 }
 
@@ -206,7 +207,7 @@ void nextbin()  {
 
   move(1000, HIGH, 'x', container);
 
-  WebSerial.send("event-from-arduino", "done");
+  WebSerial.send("event-from-arduino", "done " + String(totalcounterx) + " " + String(totalcountery));
 
 }
 

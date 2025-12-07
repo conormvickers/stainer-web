@@ -17,12 +17,24 @@ function App() {
   const [connection, setConnection] = useState<any | null>(null);
   const [connectionStatus, setConnectionStatus] =
     useState<string>("disconnected");
+  const [xpos, setXpos] = useState(0);
+  const [ypos, setYpos] = useState(0);
   async function connectSerial() {
     const connection = setupSerialConnection({});
     setConnection(connection);
 
     connection.on("event-from-arduino", function (data) {
       console.log('Received event "event-from-arduino" with parameter ' + data);
+      if (
+        data &&
+        typeof data === "string" &&
+        (data.startsWith("moving") || data.startsWith("done"))
+      ) {
+        const [t, x, y] = data.split(" ");
+        console.log(x, y);
+        setXpos(parseInt(x));
+        setYpos(parseInt(y));
+      }
     });
   }
   useEffect(() => {
