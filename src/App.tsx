@@ -1,47 +1,89 @@
 import { useEffect, useState } from "react";
-import reactLogo from "./assets/react.svg";
-import viteLogo from "/vite.svg";
 import "./App.css";
 import { setupSerialConnection } from "simple-web-serial";
+import {
+  Button,
+  Card,
+  CardActionArea,
+  CardActions,
+  CardHeader,
+} from "@mui/material";
 
-const baudRate = 115200;
 function App() {
+  const bins = [
+    { id: 1, name: "Bin 1" },
+    { id: 2, name: "Bin 2" },
+  ];
   const [connection, setConnection] = useState<any | null>(null);
+  const [connectionStatus, setConnectionStatus] =
+    useState<string>("disconnected");
   async function connectSerial() {
-    const connection = setupSerialConnection({
-      requestAccessOnPageLoad: true,
-      requestElement: "serial-request",
-    });
+    const connection = setupSerialConnection({});
     setConnection(connection);
+
     connection.on("event-from-arduino", function (data) {
       console.log('Received event "event-from-arduino" with parameter ' + data);
     });
   }
-
-  async function sendSerial(data: string) {}
   useEffect(() => {
     connectSerial();
   }, []);
 
-  async function selectSerialPort() {}
-
   return (
     <>
-      {connection ? "Connected" : "Disconnected"}
-      <div id="serial-request">fes</div>
-
-      <button onClick={selectSerialPort}>Select Serial Port</button>
-      <button onClick={() => connection.send("event-to-arduino", "x")}>
-        test
-      </button>
-
-      <button onClick={() => sendSerial("x")}>Move X</button>
-      <button onClick={() => sendSerial("y")}>Move Y</button>
-
-      <button onClick={() => sendSerial("h")}>Home X</button>
-      <button onClick={() => sendSerial("j")}>Home Y</button>
       <div>
-        <button onClick={() => sendSerial("n")}>Next Bin</button>
+        <Button
+          variant={connectionStatus === "connected" ? "outlined" : "contained"}
+          onClick={async () => {
+            await connection.startConnection();
+            console.log("Connected");
+            setConnectionStatus(
+              connection.ready() ? "connected" : "disconnected"
+            );
+          }}
+        >
+          Connect!
+        </Button>
+      </div>
+      <div>{connectionStatus}</div>
+
+      <div>
+        <button onClick={() => connection.send("event-to-arduino", "y")}>
+          Move Y
+        </button>
+      </div>
+      <div>
+        <button onClick={() => connection.send("event-to-arduino", ",n")}>
+          Next Bin
+        </button>
+        <button onClick={() => connection.send("event-to-arduino", "x")}>
+          Move X
+        </button>
+        <button onClick={() => connection.send("event-to-arduino", "h")}>
+          Home X
+        </button>
+      </div>
+      <button onClick={() => connection.send("event-to-arduino", "j")}>
+        Home Y
+      </button>
+      <div style={{ display: "flex" }}>
+        {bins.map((bin) => (
+          <Card
+            style={{
+              padding: "10px",
+              flexGrow: 1,
+              margin: "10px",
+              border: "1px solid black",
+              maxWidth: "200px",
+              height: "200px",
+            }}
+          >
+            <CardHeader title={bin.name} />
+            <CardActions>
+              <Button>Dip Here Now</Button>
+            </CardActions>
+          </Card>
+        ))}
       </div>
     </>
   );
