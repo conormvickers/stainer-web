@@ -66,11 +66,11 @@ function App() {
         <button onClick={() => connection.send("event-to-arduino", "y")}>
           Move Y
         </button>
+        <button onClick={() => connection.send("event-to-arduino", "j")}>
+          Home Y
+        </button>
       </div>
       <div>
-        <button onClick={() => connection.send("event-to-arduino", "n")}>
-          Next Bin
-        </button>
         <button onClick={() => connection.send("event-to-arduino", "x")}>
           Move X
         </button>
@@ -78,9 +78,13 @@ function App() {
           Home X
         </button>
       </div>
-      <button onClick={() => connection.send("event-to-arduino", "j")}>
-        Home Y
+      <button onClick={() => connection.send("event-to-arduino", "n")}>
+        Next Bin
       </button>
+      <button onClick={() => connection.send("event-to-arduino", "p")}>
+        Previous Bin
+      </button>
+
       <div style={{ display: "flex" }}>
         {bins.map((bin) => (
           <Card
