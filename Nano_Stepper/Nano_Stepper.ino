@@ -13,7 +13,8 @@ const int ystopneg = 10;
 const int container = 11;
 
 int counter;
-int totalcounter;
+int totalcounterx;
+int totalcountery;
 bool testvar  = false;
 
 
@@ -76,6 +77,44 @@ void eventCallback(JSONVar data) {
   WebSerial.send("event-from-arduino", "Finished command " + copy);
 };
 
+void move( int steps, int direction, char axis, int endstoppin) {
+  counter = 0;
+  
+  if (axis == 'x') {
+    digitalWrite(xdirection, direction);
+  }else if (axis == 'y') {
+    digitalWrite(ydirection, direction);
+  }
+
+  while ( counter < steps && checkEndStop(endstoppin) ){
+    digitalWrite(ystep, HIGH);
+    delay(2);
+    digitalWrite(ystep, LOW);
+    delay(2);
+    Serial.println(counter);
+
+    counter = counter + 1;
+    if (axis == 'x'){
+      totalcounterx = totalcounterx + 2 * direction - 1;
+    }else if (axis == 'y'){
+      totalcountery = totalcountery +  2 * direction - 1;
+    }
+
+    if (counter % 100 == 0){
+      WebSerial.send("event-from-arduino", String(totalcounterx) + " " + String(totalcountery));
+    }
+  }
+
+
+
+}
+void checkEndStop(int pin){
+  if (pin == 0){
+    return true;
+  }else {
+    return !digitalRead(pin);
+  }
+}
 
 void test() {
  
