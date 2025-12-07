@@ -191,7 +191,7 @@ void jumpx (){
 void homex() {
   WebSerial.send("event-from-arduino", "starting");
 
-  move(400, LOW, 'x', xstopneg);
+  move(totalcounterx + 200, LOW, 'x', xstopneg);
  
 
   WebSerial.send("event-from-arduino", "done");
