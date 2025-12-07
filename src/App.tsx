@@ -44,6 +44,9 @@ function App() {
   return (
     <>
       <div>
+        x: {xpos} y:{ypos}
+      </div>
+      <div>
         <Button
           variant={connectionStatus === "connected" ? "outlined" : "contained"}
           onClick={async () => {

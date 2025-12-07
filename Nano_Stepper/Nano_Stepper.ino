@@ -108,6 +108,8 @@ void eventCallback(JSONVar data) {
     jumpy();
   } else if (copy == "j") {
     homey();
+  } else if (copy == "p") {
+    prevbin();
   } else if (copy == "s") {
     sequence();
   } else {
@@ -154,6 +156,9 @@ bool checkEndStop(int pin){
   if (pin == 0){
     return true;
   }else {
+    if (digitalRead(xstopneg)){
+      return false;
+    }
     return !digitalRead(pin);
   }
 }
@@ -203,9 +208,19 @@ totalcounterx = 0;
 void nextbin()  {
   WebSerial.send("event-from-arduino", "starting");
 
-  move(400, HIGH, 'x', 0);
+  move(200, HIGH, 'x', 0);
 
   move(1000, HIGH, 'x', container);
+
+  WebSerial.send("event-from-arduino", "done " + String(totalcounterx) + " " + String(totalcountery));
+
+}
+void prevbin()  {
+  WebSerial.send("event-from-arduino", "starting");
+
+  move(200, LOW, 'x', xstopneg);
+
+  move(1000, LOW, 'x', container);
 
   WebSerial.send("event-from-arduino", "done " + String(totalcounterx) + " " + String(totalcountery));
 
