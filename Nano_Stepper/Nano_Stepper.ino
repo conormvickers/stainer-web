@@ -163,17 +163,7 @@ void jumpy (){
   
   WebSerial.send("event-from-arduino", "starting");
 
-  counter = 0;
-  digitalWrite(ydirection, HIGH);
-
-  while ( counter < 500 ){
-    digitalWrite(ystep, HIGH);
-    delay(2);
-    digitalWrite(ystep, LOW);
-    delay(2);
-    Serial.println(counter);
-    counter = counter + 1;
-  }
+  move(400, HIGH, 'y', 0);
 
   WebSerial.send("event-from-arduino", "done");
 
@@ -182,17 +172,7 @@ void jumpy (){
 void homey () {
   WebSerial.send("event-from-arduino", "starting");
 
-  counter = 0;
-  digitalWrite(ydirection, LOW);
-
-  while ( counter < 500 && !digitalRead(ystopneg)){
-    digitalWrite(ystep, HIGH);
-    delay(2);
-    digitalWrite(ystep, LOW);
-    delay(2);
-    Serial.println(counter);
-    counter = counter + 1;
-  }
+  move(800, LOW, 'y', ystopneg);
   WebSerial.send("event-from-arduino", "done");
 
 
@@ -202,19 +182,7 @@ void jumpx (){
   WebSerial.send("event-from-arduino", "starting");
 
   move(400, HIGH, 'x', 0);
-  // counter = 0;
-  // digitalWrite(xdirection, HIGH);
-
-  // while ( counter < 400 )
-  // {
-  //   digitalWrite(xstep, HIGH);
-  //   delay(2);
-  //   digitalWrite(xstep, LOW);
-  //   delay(2);
-  //   Serial.println(counter);
-  //   counter = counter + 1;
-  //   totalcountery = totalcountery + 1;
-  // }
+  
 
   WebSerial.send("event-from-arduino", "done");
 
@@ -223,20 +191,8 @@ void jumpx (){
 void homex() {
   WebSerial.send("event-from-arduino", "starting");
 
-  move(400, LOW, 'x', 9);
+  move(400, LOW, 'x', xstopneg);
  
-  // counter = 0;
-  // digitalWrite(xdirection, LOW);
-  // while ( counter < totalcountery + 200 && !digitalRead(xstopneg)){
-  //   digitalWrite(xstep, HIGH);
-  //   delay(2);
-  //   digitalWrite(xstep, LOW);
-  //   delay(2);
-  //   Serial.println(counter);
-  //   counter = counter + 1;
-
-  // }
-  // totalcountery = 0;
 
   WebSerial.send("event-from-arduino", "done");
 
@@ -246,32 +202,9 @@ void homex() {
 void nextbin()  {
   WebSerial.send("event-from-arduino", "starting");
 
-  counter = 0;
-  digitalWrite(xdirection, HIGH);
-  while ( counter < 200  )
-  {
-    digitalWrite(xstep, HIGH);
-    delay(2);
-    digitalWrite(xstep, LOW);
-    delay(2);
-    Serial.println(counter);
-    counter = counter + 1;
-    totalcountery = totalcountery + 1;
-  }
- 
+  move(400, HIGH, 'x', 0);
 
-   counter = 0;
-
-  while ( counter < 800 && !digitalRead(container) )
-  {
-    digitalWrite(xstep, HIGH);
-    delay(2);
-    digitalWrite(xstep, LOW);
-    delay(2);
-    Serial.println(counter);
-    counter = counter + 1;
-    totalcountery = totalcountery + 1;
-  }
+  move(1000, HIGH, 'x', container);
 
   WebSerial.send("event-from-arduino", "done");
 

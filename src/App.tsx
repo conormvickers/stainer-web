@@ -46,18 +46,6 @@ function App() {
         </Button>
       </div>
       <div>{connectionStatus}</div>
-      <div>
-        <Button
-          onClick={() => connection.send("event-to-arduino", "move 100 1 x 9")}
-        >
-          x
-        </Button>
-        <Button
-          onClick={() => connection.send("event-to-arduino", "move 100 0 x 9")}
-        >
-          -x
-        </Button>
-      </div>
 
       <div>
         <button onClick={() => connection.send("event-to-arduino", "y")}>
