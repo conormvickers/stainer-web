@@ -221,6 +221,8 @@ void prevbin()  {
   move(200, LOW, 'x', xstopneg);
 
   move(1000, LOW, 'x', container);
+  move(200, LOW, 'x', xstopneg);
+  move(400, HIGH, 'x', container);
 
   WebSerial.send("event-from-arduino", "done " + String(totalcounterx) + " " + String(totalcountery));
 
