@@ -54,6 +54,9 @@ void setup() {
 
 }
 
+void(* resetFunc) (void) = 0; // declare reset function at address 0
+
+
 void eventCallback(JSONVar data) {
  
   String copy = data;
@@ -112,6 +115,8 @@ void eventCallback(JSONVar data) {
     prevbin();
   } else if (copy == "s") {
     sequence();
+  }else if (copy == "RESET"){
+    resetFunc();
   } else {
     
   }

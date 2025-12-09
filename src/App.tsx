@@ -38,47 +38,56 @@ function App() {
   const [currentBin, setCurrentBin] = useState(-1);
   const [traveling, setTraveling] = useState("stopped");
   const [commandQueue, setCommandQueue] = useState<string[]>(["n", "n"]);
-  const [runningQueue, setRunningQueue] = useState(false);
-  const [currentQueueIndex, setCurrentQueueIndex] = useState(0);
+  const [currentQueueIndex, setCurrentQueueIndex] = useState(-1);
+  const [commandsFinished, setCommandsFinished] = useState(false);
   async function connectSerial() {
     const connection = setupSerialConnection({});
     setConnection(connection);
 
-    connection.on("event-from-arduino", function (data) {
-      console.log('Received event "event-from-arduino" with parameter ' + data);
-      if (
-        data &&
-        typeof data === "string" &&
-        (data.startsWith("moving") || data.startsWith("done"))
-      ) {
+    connection.on("event-from-arduino", handleData);
+  }
+
+  function handleData(data: any) {
+    if (data && typeof data === "string") {
+      if (data.startsWith("moving") || data.startsWith("done")) {
         const [t, x, y] = data.split(" ");
-        console.log(x, y);
         setXpos(parseInt(x));
         setYpos(parseInt(y));
-
-        if (data.startsWith("done")) {
-          if (traveling === "forward") {
-            setTraveling("stopped");
-            setCurrentBin(currentBin + 1);
-          } else if (traveling === "backward") {
-            setTraveling("stopped");
-            setCurrentBin(Math.min(0, currentBin - 1));
-          }
-          if (runningQueue) {
-            setCurrentQueueIndex(currentQueueIndex + 1);
-          }
-        }
       }
-    });
+      if (data.includes("done")) {
+        setCommandsFinished(true);
+      }
+    }
   }
+
   useEffect(() => {
-    if (currentQueueIndex >= commandQueue.length && runningQueue) {
-      setRunningQueue(false);
-    } else if (runningQueue) {
+    if (!commandsFinished) {
+      return;
+    }
+    console.log("===================", commandsFinished);
+    setCommandsFinished(false);
+
+    if (currentQueueIndex >= 0) {
+      setCurrentQueueIndex(currentQueueIndex + 1);
+    }
+  }, [commandsFinished]);
+
+  useEffect(() => {
+    if (currentQueueIndex === -1) {
+      return;
+    }
+
+    if (currentQueueIndex >= commandQueue.length) {
+      console.log("Done with queue");
+
+      setCurrentQueueIndex(-1);
+    } else {
       const command = commandQueue[currentQueueIndex];
+      setTraveling("moving");
       connection.send("event-to-arduino", command);
     }
   }, [currentQueueIndex]);
+
   useEffect(() => {
     connectSerial();
   }, []);
@@ -169,7 +178,7 @@ function App() {
       }
     }
     setBinElements(elementsToSet);
-  }, [traveling]);
+  }, [traveling, currentBin]);
 
   return (
     <>
@@ -188,9 +197,13 @@ function App() {
         </Button>
       </div>
       <div>{connectionStatus}</div>
-
       <Card sx={{ m: 2, p: 2 }}>
         <CardHeader title="Controls" />
+        <div>
+          <button onClick={() => connection.send("event-to-arduino", "RESET")}>
+            RESET
+          </button>
+        </div>
         <div>
           <button onClick={() => connection.send("event-to-arduino", "y")}>
             Move Y
@@ -239,18 +252,13 @@ function App() {
             size="small"
             color="primary"
             onClick={() => {
-              setRunningQueue(true);
-              connection.send(
-                "event-to-arduino",
-                commandQueue[currentQueueIndex]
-              );
+              setCurrentQueueIndex(0);
             }}
           >
             Execute
           </Button>
         </CardActions>
       </Card>
-
       <div>
         x: {xpos} y:{ypos}
       </div>
@@ -298,6 +306,8 @@ function App() {
           justifyContent: "flex-end",
         }}
       ></div>
+      {currentQueueIndex}
+      {traveling}
       <button onClick={() => setXpos(xpos + 10)}>change</button>
       <div
         style={{
