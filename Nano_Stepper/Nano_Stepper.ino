@@ -252,19 +252,19 @@ void loop() {
 
   
 
-if (digitalRead(xstopneg)){
-    WebSerial.send("event-from-arduino", "x-");
+// if (digitalRead(xstopneg)){
+//     WebSerial.send("event-from-arduino", "x-");
 
-}else if (digitalRead(ystopneg)){
-    WebSerial.send("event-from-arduino", "y-");
+// }else if (digitalRead(ystopneg)){
+//     WebSerial.send("event-from-arduino", "y-");
 
-  }else if (digitalRead(ystoppos)){
-    WebSerial.send("event-from-arduino", "y+");
+//   }else if (digitalRead(ystoppos)){
+//     WebSerial.send("event-from-arduino", "y+");
 
-}else if (digitalRead(container)){
-    WebSerial.send("event-from-arduino", "container");
+// }else if (digitalRead(container)){
+//     WebSerial.send("event-from-arduino", "container");
 
-}
+// }
 
   //  if (Serial.available() > 0) {
   //   char command = Serial.read(); // Read the incoming character
