@@ -173,7 +173,7 @@ void jumpy (){
   
   WebSerial.send("event-from-arduino", "starting");
 
-  move(400, HIGH, 'y', 0);
+  move(800, HIGH, 'y', 0);
 
   WebSerial.send("event-from-arduino", "done " + String(totalcounterx) + " " + String(totalcountery));
 
