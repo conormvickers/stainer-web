@@ -10,6 +10,7 @@ const int ystep = 3;
 
 const int xstopneg = 9;
 const int ystopneg = 10;
+const int ystoppos = 13;
 const int container = 11;
 
 int counter;
@@ -32,6 +33,7 @@ void setup() {
   
   pinMode(xstopneg, INPUT);
   pinMode(ystopneg, INPUT);
+  pinMode(ystoppos, INPUT);
   pinMode(container, INPUT);
 
 
@@ -173,7 +175,7 @@ void jumpy (){
   
   WebSerial.send("event-from-arduino", "starting");
 
-  move(780, HIGH, 'y', 0);
+  move(780, HIGH, 'y', ystoppos);
 
   WebSerial.send("event-from-arduino", "done " + String(totalcounterx) + " " + String(totalcountery));
 
@@ -250,13 +252,15 @@ void loop() {
 
   
 
-// if (digitalRead(xstopneg)){
-//   Serial.println("x");
-// }else if (digitalRead(ystopneg)){
-//   Serial.println("y");
-// }else if (digitalRead(container)){
-//   Serial.println("container");
-// }
+if (digitalRead(xstopneg)){
+  Serial.println("x");
+}else if (digitalRead(ystopneg)){
+  Serial.println("y");
+  }else if (digitalRead(ystoppos)){
+  Serial.println("endy");
+}else if (digitalRead(container)){
+  Serial.println("container");
+}
 
   //  if (Serial.available() > 0) {
   //   char command = Serial.read(); // Read the incoming character
