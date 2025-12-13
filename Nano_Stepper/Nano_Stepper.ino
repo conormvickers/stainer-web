@@ -122,7 +122,7 @@ void eventCallback(JSONVar data) {
   } else {
     
   }
-  WebSerial.send("event-from-arduino", "Finished command " + copy);
+  // WebSerial.send("event-from-arduino", "Finished command " + copy);
 };
 
 void move( int steps, int direction, char axis, int endstoppin) {
@@ -253,13 +253,17 @@ void loop() {
   
 
 if (digitalRead(xstopneg)){
-  Serial.println("x");
+    WebSerial.send("event-from-arduino", "x-");
+
 }else if (digitalRead(ystopneg)){
-  Serial.println("y");
+    WebSerial.send("event-from-arduino", "y-");
+
   }else if (digitalRead(ystoppos)){
-  Serial.println("endy");
+    WebSerial.send("event-from-arduino", "y+");
+
 }else if (digitalRead(container)){
-  Serial.println("container");
+    WebSerial.send("event-from-arduino", "container");
+
 }
 
   //  if (Serial.available() > 0) {
