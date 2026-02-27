@@ -10,6 +10,7 @@ const int ystep = 3;
 
 const int xstopneg = 9;
 const int ystopneg = 10;
+const int ystoppos = 13;
 const int container = 11;
 
 int counter;
@@ -42,6 +43,9 @@ void setup() {
 
 }
 
+void(* resetFunc) (void) = 0; // declare reset function at address 0
+
+
 void eventCallback(JSONVar data) {
  
   String copy = data;
@@ -56,8 +60,12 @@ void eventCallback(JSONVar data) {
     jumpy();
   } else if (copy == "j") {
     homey();
+  } else if (copy == "p") {
+    prevbin();
   } else if (copy == "s") {
     sequence();
+  }else if (copy == "RESET"){
+    resetFunc();
   } else {
     
   }
@@ -66,17 +74,20 @@ void eventCallback(JSONVar data) {
 
 void move( int steps, int direction, char axis, int endstoppin) {
   counter = 0;
+  int steppin;
   
   if (axis == 'x') {
     digitalWrite(xdirection, direction);
+    steppin = xstep;
   }else if (axis == 'y') {
     digitalWrite(ydirection, direction);
+    steppin = ystep;
   }
 
   while ( counter < steps && checkEndStop(endstoppin) ){
-    digitalWrite(ystep, HIGH);
+    digitalWrite(steppin, HIGH);
     delay(2);
-    digitalWrite(ystep, LOW);
+    digitalWrite(steppin, LOW);
     delay(2);
     Serial.println(counter);
 
@@ -96,9 +107,13 @@ void move( int steps, int direction, char axis, int endstoppin) {
 
 }
 bool checkEndStop(int pin){
+bool checkEndStop(int pin){
   if (pin == 0){
     return true;
   }else {
+    if (digitalRead(xstopneg)){
+      return false;
+    }
     return !digitalRead(pin);
   }
 }
